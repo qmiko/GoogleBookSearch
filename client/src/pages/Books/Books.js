@@ -11,23 +11,9 @@ class Books extends Component {
   state = {
     books: [],
     title: "",
-    author: "",
-    synopsis: ""
   };
 
-  // When the component mounts, load all books and save them to this.state.books
-  componentDidMount() {
-    this.loadBooks();
-  }
 
-  // Loads all books  and sets them to this.state.books
-  loadBooks = () => {
-    API.getBooks()
-      .then(res =>
-        this.setState({ books: res.data, title: "", author: "", synopsis: "" })
-      )
-      .catch(err => console.log(err));
-  };
 
   // Deletes a book from the database with a given id, then reloads books from the db
   deleteBook = id => {
@@ -48,18 +34,18 @@ class Books extends Component {
   // Then reload books from the database
   handleFormSubmit = event => {
     event.preventDefault();
-    if (this.state.title && this.state.author) {
-      API.saveBook({
-        title: this.state.title,
-        author: this.state.author,
-        synopsis: this.state.synopsis
-      })
-        .then(res => this.loadBooks())
+    if (this.state.title) {
+      API.getBooksFromGoogle(this.state.title)
+        .then(res => this.setState({
+          books: res.data.items
+        }))
         .catch(err => console.log(err));
     }
   };
 
   render() {
+
+console.log('books', this.state.books)
     return (
       <Container fluid>
         <Row>
@@ -74,20 +60,8 @@ class Books extends Component {
                 name="title"
                 placeholder="Title (required)"
               />
-              <Input
-                value={this.state.author}
-                onChange={this.handleInputChange}
-                name="author"
-                placeholder="Author (required)"
-              />
-              <TextArea
-                value={this.state.synopsis}
-                onChange={this.handleInputChange}
-                name="synopsis"
-                placeholder="Synopsis (Optional)"
-              />
               <FormBtn
-                disabled={!(this.state.author && this.state.title)}
+                disabled={!(this.state.title)}
                 onClick={this.handleFormSubmit}
               >
                 Submit Book
@@ -102,12 +76,16 @@ class Books extends Component {
               <List>
                 {this.state.books.map(book => {
                   return (
-                    <ListItem key={book._id}>
-                      <a href={"/books/" + book._id}>
+                    <ListItem key={book.id}>
+                      <p>{book.volumeInfo.title}</p>
+                      <p>{book.volumeInfo.authors}</p>
+                      <p>{book.volumeInfo.description}</p>
+                      <img src={book.volumeInfo.imageLinks.smallThumbnail} alt={book.volumeInfo.title}/>
+                      {/* <a href={"/books/" + book._id}>
                         <strong>
                           {book.title} by {book.author}
                         </strong>
-                      </a>
+                      </a> */}
                       <DeleteBtn onClick={() => this.deleteBook(book._id)} />
                     </ListItem>
                   );
