@@ -47,11 +47,12 @@ class Books extends Component {
 
 console.log('books', this.state.books)
     return (
-      <Container fluid>
+      <Container>
         <Row>
-          <Col size="md-6">
+          <Col size="md">
+            <br></br>
             <Jumbotron>
-              <h1>What Books Should I Read?</h1>
+              <h1 style={{fontWeight: "lighter"}}>Search & Save Books to Read</h1>
             </Jumbotron>
             <form>
               <Input
@@ -64,14 +65,16 @@ console.log('books', this.state.books)
                 disabled={!(this.state.title)}
                 onClick={this.handleFormSubmit}
               >
-                Submit Book
+                Submit
               </FormBtn>
             </form>
           </Col>
-          <Col size="md-6 sm-12">
-            <Jumbotron>
+          </Row>
+          <Row>
+          <Col size="md">
+            {/* <Jumbotron>
               <h1>Books On My List</h1>
-            </Jumbotron>
+            </Jumbotron> */}
             {this.state.books.length ? (
               <List>
                 {this.state.books.map(book => {
@@ -92,7 +95,7 @@ console.log('books', this.state.books)
                 })}
               </List>
             ) : (
-              <h3>No Results to Display</h3>
+              <h3 style={{color: "grey", fontWeight: "lighter"}}>No Results to Display</h3>
             )}
           </Col>
         </Row>
